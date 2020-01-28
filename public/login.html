@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Quiz - App</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="quiz-box-container">
+        <div class="wrapper">
+            <div class="quiz-box">
+                <div class="name-box">
+                    <span>Login</span>
+                    </br>
+                    <form id="login-form">
+                        <input type="text" id="username" />
+                        </br>
+                        <input type="password" id="password" />
+                        </br>
+                        <button type="submit" id="login-button">Login</button>
+                        <button id="register-href">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script type="text/javascript">
+
+    const login = async (username, password) => {
+        console.log('logging in...');
+        const response = await fetch('/api/login', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        });
+        console.log('got response...')
+        const data = await response.json();
+        console.log(data);
+        return data.token;
+    };
+    $(document).ready(function() {
+        const token = localStorage.getItem('jwt');
+        if (token) {
+            location.href = '/';
+            return;
+        }
+        $("#login-button").click(function(event) {
+            event.preventDefault();
+            const username = $("#username").val();
+            const password = $("#password").val();
+
+            login(username, password)
+                .then(function(token) {
+                    if (token) {
+                        localStorage.setItem('jwt', token);
+                        localStorage.setItem('username', username);
+                        location.href = '/';
+                    } else {
+                        alert('Login failed.')
+                    }
+                });
+        });
+
+        $('#register-href').click(function(event) {
+            event.preventDefault();
+            location.href = '/register.html';
+        })
+    });
+</script>
+</body>
+</html>

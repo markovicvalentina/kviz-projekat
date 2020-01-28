@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Quiz - App</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="quiz-box-container">
+        <div class="wrapper-question">
+            <div class="quiz-box">
+                <div class="name-box">
+                    <span>Add New Question</span>
+                    </br>
+                    <form id="question-form">
+                        <input type="text" id="questionString" placeholder="question string"/>
+                        </br>
+                        <input type="text" id="correctChoice" placeholder="correct choice"/>
+                        </br>
+                        <input type="text" id="wrongChoice1" placeholder="wrong choice 1"/>
+                        </br>
+                        <input type="text" id="wrongChoice2" placeholder="wrong choice 2"/>
+                        </br>
+                        <input type="text" id="wrongChoice3" placeholder="wrong choice 3"/>
+                        </br>
+                        <button type="submit" id="question-button">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script type="text/javascript">
+
+    const question = async (questionString, correctChoice, wrongChoice1, wrongChoice2, wrongChoice3) => {
+        const response = await fetch('/api/question', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                questionString: questionString, 
+                correctChoice: correctChoice, 
+                wrongChoice1: wrongChoice1, 
+                wrongChoice2: wrongChoice2, 
+                wrongChoice3: wrongChoice3 
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+        return data;
+    };
+    $(document).ready(function() {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            location.href ='/'; 
+            return;
+        }
+        $("#question-button").click(function(event) {
+            event.preventDefault();
+            const questionString = $("#questionString").val();
+            const correctChoice = $("#correctChoice").val();
+            const wrongChoice1 = $("#wrongChoice1").val();
+            const wrongChoice2 = $("#wrongChoice2").val();
+            const wrongChoice3 = $("#wrongChoice3").val();
+
+            question(questionString, correctChoice, wrongChoice1, wrongChoice2, wrongChoice3)
+                .then(function(data) {
+                    console.log(data);
+                    location.href = '/';
+                });
+        });
+    });
+</script>
+</body>
+</html>
