@@ -8,7 +8,6 @@ const routes = require('./routes/routes.js');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//comment
 app.use(express.static('public'));
 app.use('/api', routes);
 
